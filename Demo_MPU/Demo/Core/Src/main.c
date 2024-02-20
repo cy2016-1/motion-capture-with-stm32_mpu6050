@@ -100,7 +100,7 @@ int main(void)
 	while(mpu_dmp_init()) //DMP初始化
 	{
 		
-		printf("DMP初始化失败!失败代码：%d\r\n",mpu_dmp_init());
+		printf("DMP failed code：%d\r\n",mpu_dmp_init());
 	}
 
   /* USER CODE END 2 */

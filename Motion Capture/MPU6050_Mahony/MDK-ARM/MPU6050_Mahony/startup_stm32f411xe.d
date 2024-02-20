@@ -1,0 +1,1 @@
+mpu6050_mahony\startup_stm32f411xe.o: startup_stm32f411xe.s
