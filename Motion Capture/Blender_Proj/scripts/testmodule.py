@@ -9,9 +9,41 @@ import numpy as np
 
 
 FPS = 60
+
+## Bluetooth
+#import bluetooth
+
+## 定义连接的地址和端口
+#target_address = "98:D3:02:96:5E:E4"
+#port = 1  # 默认端口号
+
+## 连接到设备
+#sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)  # 创建RFCOMM套接字对象
+#try:
+#    sock.connect((target_address, port))
+#    print("Connected to {} on port {}".format(target_address, port))
+
+#    # 接收数据
+#    while True:
+#        try:
+#            data = sock.recv(1024)
+#            if not data:
+#                break  # 如果没有收到数据，可能是连接已经关闭
+#            print(data.decode('utf-8'))
+#        except bluetooth.btcommon.BluetoothError as e:
+#            print("Bluetooth error:", str(e))
+#            break  # 如果发生Bluetooth错误，可能是连接已经关闭
+
+#except bluetooth.btcommon.BluetoothError as e:
+#    print("Error establishing connection:", str(e))
+#finally:
+#    # 关闭连接
+#    sock.close()
+#    print("Connection closed.")
+
 # 串口配置
 port = 'COM10'  # 指定串口号，根据实际情况修改
-baudrate = 115200  # 波特率，根据实际情况修改
+baudrate = 256000  # 波特率，根据实际情况修改
 
 # 创建串口对象
 ser = serial.Serial(port, baudrate, timeout=1)
@@ -100,17 +132,19 @@ def updateAngles(angles):
     setBoneRotation(bone_lower_leg_R, lowerLegR_rel)
     setBoneRotation(bone_upper_leg_L, upperLegL_out)
     setBoneRotation(bone_lower_leg_L, lowerLegL_rel)
+
+    
     
 def resetBone():
     setBoneRotation(bone_upper_arm_R, [1, 0, 0, 0])
     setBoneRotation(bone_lower_arm_R, [1, 0, 0, 0])
     setBoneRotation(bone_upper_arm_L, [1, 0, 0, 0])
     setBoneRotation(bone_lower_arm_L, [1, 0, 0, 0])
-    setBoneRotation(bone_trunk, [0.707, 0.707, 0, 0])
+    setBoneRotation(bone_trunk, [1, 0, 0, 0])
     setBoneRotation(bone_head, [1, 0, 0, 0])
-    setBoneRotation(bone_upper_leg_R, [0.707, -0.707, 0, 0])
+    setBoneRotation(bone_upper_leg_R, [1, 0, 0, 0])
     setBoneRotation(bone_lower_leg_R, [1, 0, 0, 0])
-    setBoneRotation(bone_upper_leg_L, [0.707, -0.707, 0, 0])
+    setBoneRotation(bone_upper_leg_L, [1, 0, 0, 0])
     setBoneRotation(bone_lower_leg_L, [1, 0, 0, 0])
 
 class ModalTimerOperator(bpy.types.Operator):
@@ -126,19 +160,25 @@ class ModalTimerOperator(bpy.types.Operator):
             return self.cancel(context)
     
         if event.type == "TIMER":
-            # this will eval true every Timer delay seconds
-            # If you use interrupt mode, do not comment on this line of code
-#            ser.write("a".encode('UTF-8'))
-            s=ser.readline()[:-3].decode('UTF-8') # delete ";\r\n"
-            print(s)
-            
+            try:
+                # Read serial data
+                s = ser.readline()[:-3].decode('UTF-8')  # delete ";\r\n"
+            except Exception as e:
+                print(f"Error reading serial data: {e}")
+                return {"PASS_THROUGH"}
             if not s:
                 print("Invalid joint data")
                 return {"PASS_THROUGH"}
-            
-            angles=[x.split(',') for x in s.split(';')]
-            for i in range(len(angles)):
-                angles[i] = [float(x) for x in angles[i]]
+            # Process joint angles
+            angles = [x.split(',') for x in s.split(';')]
+
+            try:
+                for i in range(len(angles)):
+                    angles[i] = [float(x) for x in angles[i]]
+            except ValueError as ve:
+                print(f"Error converting string to float: {ve}")
+                return {"PASS_THROUGH"}
+
             if len(angles) == 10:
                 updateAngles(angles)
 

@@ -106,14 +106,14 @@ int main(void)
   HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 	sensor_init(&armR, 		&hi2c2, 1, offsetAcGyA);
 	sensor_init(&forearmR, 	&hi2c2, 0, offsetAcGyB);
-	sensor_init(&armL, 		&hi2c2, 6, offsetAcGyC);
+	sensor_init(&armL, 		&hi2c2, 6, offsetAcGyJ);
 	sensor_init(&forearmL, 	&hi2c2, 7, offsetAcGyD);
 	sensor_init(&trunk, 	&hi2c2, 3, offsetAcGyE);
 	sensor_init(&upperlegR, &hi2c1, 2, offsetAcGyF);
 	sensor_init(&legR, 		&hi2c1, 3, offsetAcGyG);
 	sensor_init(&upperlegL,	&hi2c1, 4, offsetAcGyH);
 	sensor_init(&legL, 		&hi2c1, 5, offsetAcGyI);
-	sensor_init(&head, 		&hi2c2, 2, offsetAcGyJ);
+	sensor_init(&head, 		&hi2c2, 2, offsetAcGyC);
 //	  sensor_calibrate(&armR); 	
 //	  sensor_calibrate(&forearmR);
 //	  sensor_calibrate(&armL); 	

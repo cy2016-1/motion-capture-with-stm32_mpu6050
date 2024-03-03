@@ -11,7 +11,7 @@ import numpy as np
 FPS = 60
 # 串口配置
 port = 'COM10'  # 指定串口号，根据实际情况修改
-baudrate = 1382400  # 波特率，根据实际情况修改
+baudrate = 256000  # 波特率，根据实际情况修改
 
 # 创建串口对象
 ser = serial.Serial(port, baudrate, timeout=1)
